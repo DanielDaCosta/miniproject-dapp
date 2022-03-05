@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deploy a Remix Contract</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>Ethereum Secret Messenger</h1>
+        <hr>
+
+        <label for="message">This site writes a secret message to the Ethereum
+            blockchain!</label>
+        <input id="userInput" type="text">
+
+        <button id="setMessageButton">Set secret message</button>
+        <button class="enableEthereumButton">Enable Ethereum</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+
+        // Connect a the web3 provider
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(window.ethereum);
+        } else {
+            web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/80e8c7b49e8349e9a8a5bedd0b5358bc"));
+        }
+
+        // Set a default account
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        // Get the contract address
+        var myMessage = new web3.eth.Contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "x",
+				"type": "string"
+			}
+		],
+		"name": "setMessage",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getMessage",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+],'0xd785D62dcba8C344FbCEe1D8341bCfB7C9E7150d', {
+    from: '0x507536263bf3e03f1Cd52d06Ff5f863EA4b08d92',
+    gasPrice: '20000000000'
+});
+
+        // Get the contract abi
+        // var myMessage = RemixContract.at('0x337037DdAF9a3712e1A37d3DE5b9ef1BfB0178c7');
+
+        console.log(myMessage);
+
+        $("#setMessageButton").click(function () {
+            myMessage.methods.setMessage($("#userInput").val()).send((error, result) => {message = result});
+            console.log($("#userInput").val())
+        });
+        const ethereumButton = document.querySelector('.enableEthereumButton');    
+        ethereumButton.addEventListener('click', () => {
+          //Will Start the metamask extension
+          ethereum.request({ method: 'eth_requestAccounts' });
+        });
+    </script>
+</body>
+
+</html>
