@@ -1,6 +1,6 @@
 # miniproject-dapp
 
-Deploy Dapp to Rinkeby Test Network.
+Deploy DApp to Rinkeby Test Network.
 
 ## Tools
 - Remix
